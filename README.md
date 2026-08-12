@@ -16,9 +16,11 @@ Hướng dẫn thao tác đầy đủ nằm trong [`guide_lab.md`](guide_lab.md)
 
 ## Yêu cầu & Quick Start
 
-**Yêu cầu:** Python 3.11 trở lên. Cần **OpenAI API key** để chạy `domain_assistant.py`
-(Part 3 — sinh 20 actual answers từ RAG thật); phần code core (`template.py`, Part 1–2)
-không cần API key.
+**Yêu cầu:** Python 3.11 trở lên. Baseline dùng **OpenAI API key** để chạy
+`domain_assistant.py` (Part 3 — sinh 20 actual answers từ RAG thật); phần code core
+(`template.py`, Part 1–2) không cần API key. Nếu không có OpenAI credits, repo cũng
+hỗ trợ Gemini qua endpoint tương thích; cần ghi rõ provider/model trong báo cáo vì
+đây là thay đổi system under evaluation so với baseline.
 
 ```bash
 python --version                        # xác nhận 3.11+

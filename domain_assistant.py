@@ -266,6 +266,56 @@ class OpenAIGenerator:
         return answer
 
 
+class GeminiGenerator:
+    """Gemini generator through Google's OpenAI-compatible endpoint."""
+
+    def __init__(self, max_output_tokens: int = 300) -> None:
+        api_key = os.getenv("GEMINI_API_KEY", "").strip()
+        self.model = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite").strip()
+        if not api_key:
+            raise RuntimeError("GEMINI_API_KEY is missing from .env")
+        if not self.model:
+            raise RuntimeError("GEMINI_MODEL is missing from .env")
+        self.client = OpenAI(
+            api_key=api_key,
+            base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+        )
+        self.max_output_tokens = max_output_tokens
+        # Gemini free tier currently allows 15 generation requests per minute.
+        # Keep a small safety margin so a 20-case benchmark runs without 429s.
+        self.minimum_request_interval = 4.2
+        self._last_request_started = 0.0
+
+    def generate(self, prompt: str) -> str:
+        elapsed = time.monotonic() - self._last_request_started
+        if elapsed < self.minimum_request_interval:
+            time.sleep(self.minimum_request_interval - elapsed)
+        self._last_request_started = time.monotonic()
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0,
+            max_tokens=self.max_output_tokens,
+        )
+        answer = response.choices[0].message.content or ""
+        answer = answer.strip()
+        if not answer:
+            raise RuntimeError("Gemini returned an empty answer")
+        return answer
+
+
+def build_generator() -> TextGenerator:
+    """Build the configured provider while keeping OpenAI as the baseline."""
+    provider = os.getenv("AI_PROVIDER", "openai").strip().lower()
+    if provider == "openai":
+        return OpenAIGenerator()
+    if provider == "gemini":
+        return GeminiGenerator()
+    raise RuntimeError(
+        f"Unsupported AI_PROVIDER {provider!r}; expected 'openai' or 'gemini'"
+    )
+
+
 @dataclass(frozen=True)
 class DomainResponse:
     question: str
@@ -299,7 +349,7 @@ class DomainAssistant:
         return cls(
             corpus_id,
             BM25Retriever(chunks),
-            generator if generator is not None else OpenAIGenerator(),
+            generator if generator is not None else build_generator(),
             top_k,
         )
 

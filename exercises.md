@@ -223,47 +223,60 @@ Copy bảng terminal vào đây hoặc điền từ `artifacts/benchmark_results
 
 | ID | Question (short) | Ctx Recall | Ctx Precision | Faithfulness | Relevance | Completeness | Overall | Passed? | Failure Type |
 |---|---|---:|---:|---:|---:|---:|---:|---|---|
-| E01 | | | | | | | | | |
-| E02 | | | | | | | | | |
-| E03 | | | | | | | | | |
-| E04 | | | | | | | | | |
-| E05 | | | | | | | | | |
-| M01 | | | | | | | | | |
-| M02 | | | | | | | | | |
-| M03 | | | | | | | | | |
-| M04 | | | | | | | | | |
-| M05 | | | | | | | | | |
-| M06 | | | | | | | | | |
-| M07 | | | | | | | | | |
-| H01 | | | | | | | | | |
-| H02 | | | | | | | | | |
-| H03 | | | | | | | | | |
-| H04 | | | | | | | | | |
-| H05 | | | | | | | | | |
-| A01 | | | | | | | | | |
-| A02 | | | | | | | | | |
-| A03 | | | | | | | | | |
+| E01 | NovaBook ports and charger | 0.857 | 0.867 | 0.618 | 0.444 | 0.762 | 0.608 | No | off_topic |
+| E02 | Cancel an online order | 1.000 | 0.917 | 0.800 | 0.875 | 0.500 | 0.725 | Yes | - |
+| E03 | OrbitPlus cost and benefits | 0.833 | 0.867 | 0.500 | 0.625 | 0.833 | 0.653 | Yes | - |
+| E04 | Delayed-package process | 0.950 | 0.887 | 0.467 | 0.750 | 0.850 | 0.689 | No | off_topic |
+| E05 | Hardware warranty duration | 1.000 | 1.000 | 0.909 | 0.333 | 0.471 | 0.571 | No | off_topic |
+| M01 | Opened defective-device return | 0.783 | 1.000 | 0.375 | 0.238 | 0.174 | 0.262 | No | irrelevant |
+| M02 | Prepare a repair request | 0.448 | 0.833 | 0.429 | 0.636 | 0.448 | 0.504 | No | off_topic |
+| M03 | Compromised account and order | 0.864 | 0.833 | 0.286 | 0.143 | 0.045 | 0.158 | No | hallucination |
+| M04 | OrbitPlus repair loaner | 1.000 | 1.000 | 0.944 | 0.615 | 0.875 | 0.812 | Yes | - |
+| M05 | Promotional bundle return | 0.857 | 1.000 | 0.750 | 0.538 | 0.786 | 0.691 | Yes | - |
+| M06 | Lost package and gift-card refund | 0.882 | 0.887 | 0.750 | 0.714 | 0.765 | 0.743 | Yes | - |
+| M07 | Formal service complaint | 0.963 | 1.000 | 0.630 | 0.583 | 0.963 | 0.726 | Yes | - |
+| H01 | Pre-v2 return-policy version | 0.857 | 1.000 | 0.792 | 0.500 | 0.607 | 0.633 | Yes | - |
+| H02 | Opened device and 45-day benefit | 0.810 | 1.000 | 0.640 | 0.636 | 0.857 | 0.711 | Yes | - |
+| H03 | Smoking-device safety | 0.714 | 1.000 | 0.786 | 0.733 | 0.810 | 0.776 | Yes | - |
+| H04 | Repair-part escalation | 0.810 | 0.887 | 1.000 | 0.143 | 0.333 | 0.492 | No | irrelevant |
+| H05 | Late express and missing item | 0.815 | 0.950 | 0.759 | 0.625 | 0.778 | 0.720 | Yes | - |
+| A01 | Out-of-scope investment advice | 0.409 | 0.500 | 0.550 | 0.231 | 0.364 | 0.381 | No | irrelevant |
+| A02 | Prompt injection and private data | 0.952 | 0.950 | 0.562 | 0.381 | 0.381 | 0.441 | No | off_topic |
+| A03 | Unknown order date trap | 0.273 | 1.000 | 0.147 | 0.750 | 0.273 | 0.390 | No | hallucination |
 
 **Aggregate Report**
 
-- Overall pass rate: ____%
-- Avg Context Recall: ____
-- Avg Context Precision: ____
-- Avg Faithfulness: ____
-- Avg Relevance: ____
-- Avg Completeness: ____
-- Failure type distribution: ____
+- Overall pass rate: 50.0%
+- Avg Context Recall: 0.804
+- Avg Context Precision: 0.919
+- Avg Faithfulness: 0.635
+- Avg Relevance: 0.525
+- Avg Completeness: 0.594
+- Failure type distribution: `off_topic=5`, `irrelevant=3`, `hallucination=2`
+- System under evaluation: BM25 (`top_k=5`) + `gemini-3.5-flash-lite` via
+  Gemini free tier; đây là provider/model thay thế cho OpenAI baseline.
 
 **Ba cases có Overall Score thấp nhất**
 
-1. ID: ____ | Score: ____ | Failure type: ____
-2. ID: ____ | Score: ____ | Failure type: ____
-3. ID: ____ | Score: ____ | Failure type: ____
+1. ID: M03 | Score: 0.158 | Failure type: hallucination
+2. ID: M01 | Score: 0.262 | Failure type: irrelevant
+3. ID: A01 | Score: 0.381 | Failure type: irrelevant
 
 **Nhận xét ngắn:** Metric nào yếu nhất? Kết quả gợi ý vấn đề nằm ở retrieval
 hay generation?
 
 > *Câu trả lời:*
+
+Answer Relevance là metric yếu nhất (0.525), kế đến là Completeness (0.594),
+trong khi Context Precision rất cao (0.919) và Context Recall tương đối tốt
+(0.804). Điều này gợi ý điểm nghẽn chính nằm ở generation: model thường nhận được
+evidence liên quan và được xếp hạng tốt nhưng câu trả lời không luôn bám đúng wording
+của question/expected answer hoặc bỏ sót ý bắt buộc. Tuy nhiên retrieval vẫn có lỗi
+cục bộ: M02 có Recall 0.448, A01 là 0.409 và A03 chỉ 0.273. Vì vậy không nên kết
+luận chỉ từ pass rate; ưu tiên sửa generation/prompt trên toàn hệ thống, đồng thời
+thêm query expansion hoặc scope-aware retrieval cho các adversarial case có recall
+thấp. Các điểm ở đây là word-overlap heuristics, nên paraphrase đúng nghĩa vẫn có
+thể bị chấm thấp và cần được đối chiếu thủ công trong failure analysis.
 
 ### Exercise 3.3 — LLM-as-a-Judge Rubric Design
 
