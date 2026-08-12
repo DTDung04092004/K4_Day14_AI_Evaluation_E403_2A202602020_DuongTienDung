@@ -105,7 +105,7 @@ class EvalResult:
         Returns:
             (faithfulness + relevance + completeness) / 3.0
 
-        TODO: Return mean of the three metric scores
+        The retrieval-side metrics are intentionally excluded from this mean.
         """
         return (self.faithfulness + self.relevance + self.completeness) / 3.0
 
@@ -621,7 +621,7 @@ class BenchmarkRunner:
               - 'regressions': list[str] — names of metrics that regressed
               - 'passed': bool — True if no regressions
 
-        TODO: Compute avg per metric, compare, list regressions, set passed flag
+        A metric is a regression only when its average drops by more than 0.05.
         """
         metric_names = ("faithfulness", "relevance", "completeness")
 
@@ -762,7 +762,7 @@ class FailureAnalyzer:
         Returns:
             Markdown table string with a row per failure. Status is always "Open".
 
-        TODO: Build markdown table with failure details + matched suggestions
+        Each row contains failure details and its matched suggestion.
         """
         lines = [
             "| Failure ID | Type | Root Cause | Suggested Fix | Status |",
