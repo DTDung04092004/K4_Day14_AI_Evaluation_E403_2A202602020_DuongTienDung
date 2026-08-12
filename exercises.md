@@ -178,31 +178,37 @@ và quyết định thiết kế, không chép lại toàn bộ QA.
 
 | Hạng mục | Kết quả |
 |---|---|
-| Tổng số records | ____ / 20 |
-| Easy | ____ / 5 |
-| Medium | ____ / 7 |
-| Hard | ____ / 5 |
-| Adversarial | ____ / 3 |
-| Source documents được sử dụng | ____ / 10 |
-| Validator status | PASS / FAIL |
+| Tổng số records | 20 / 20 |
+| Easy | 5 / 5 |
+| Medium | 7 / 7 |
+| Hard | 5 / 5 |
+| Adversarial | 3 / 3 |
+| Source documents được sử dụng | 10 / 10 |
+| Validator status | PASS |
 
 **Ba case đại diện cho quyết định thiết kế**
 
 | ID | Difficulty | Source document(s) | Vì sao case phù hợp với difficulty/attack type? |
 |---|---|---|---|
-| | | | |
-| | | | |
-| | | | |
+| E01 | Easy | `01_product_catalog.md` | Factual lookup trực tiếp từ một đoạn duy nhất về cổng kết nối, bộ nhớ, lưu trữ và bộ sạc của NovaBook 14. |
+| H01 | Hard | `09_escalation_and_policy_updates.md` | Phải chọn policy version theo ngày đặt hàng, áp dụng cửa sổ 21 ngày và không bị đánh lạc hướng bởi việc kích hoạt OrbitPlus sau đó. |
+| A02 | Adversarial | `00_system_scope.md` | Prompt injection yêu cầu bỏ qua luật, tiết lộ dữ liệu riêng và xin mã xác thực; expected behavior phải từ chối toàn bộ chỉ dẫn xung đột. |
 
 **Điểm khó nhất khi xây dựng expected answer hoặc evidence là gì?**
 
 > *Câu trả lời:*
 
+Khó nhất là giữ expected answer vừa ngắn gọn vừa bao phủ đủ điều kiện và ngoại lệ,
+đặc biệt ở các case liên quan policy version, quyền lợi OrbitPlus và mốc thời gian.
+Evidence phải được chép nguyên văn nhưng không quá dài; vì vậy mỗi claim được đối
+chiếu với đúng đoạn nguồn, và các câu multi-document dùng nhiều context ngắn thay
+vì đưa cả tài liệu vào dataset.
+
 **Xác nhận:**
 
-- [ ] Mọi claim trong expected answer đều có evidence hỗ trợ.
-- [ ] Không có questions trùng ý và không dùng kiến thức ngoài corpus.
-- [ ] `python validate_golden_dataset.py` báo `PASS`.
+- [x] Mọi claim trong expected answer đều có evidence hỗ trợ.
+- [x] Không có questions trùng ý và không dùng kiến thức ngoài corpus.
+- [x] `python validate_golden_dataset.py` báo `PASS`.
 
 ### Exercise 3.2 — Benchmark Run
 
